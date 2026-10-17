@@ -1,0 +1,55 @@
+# 配置目录 /opt/mihomo；首次安装后请添加自己的节点或订阅。
+mode: rule
+log-level: info
+ipv6: true
+allow-lan: false
+mixed-port: 7890
+external-controller: 127.0.0.1:9090
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+# 手动节点放这里；或启用下面的订阅，并启用代理组中的 use。
+proxies: []
+# proxy-providers:
+#   subscription:
+#     type: http
+#     url: "填写你的 Mihomo/Clash 订阅链接"
+#     path: ./providers/subscription.yaml
+#     interval: 86400
+#     proxy: DIRECT
+
+proxy-groups:
+  - name: 代理选择
+    type: select
+    include-all: true
+    # use: [subscription]
+    # 未添加节点前拒绝代理连接；添加后可删除此行，或通过管理 API 选节点。
+    proxies: [REJECT]
+
+dns:
+  enable: true
+  listen: 0.0.0.0:7874  # 给 OxiDNS 使用；防火墙只允许可信 LAN 访问
+  ipv6: true
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-range6: fdfe:dcba:9876::1/64
+  fake-ip-filter: []
+  default-nameserver: [223.5.5.5, 119.29.29.29]
+  proxy-server-nameserver: ["https://223.5.5.5/dns-query"]
+  nameserver:
+    - "https://1.1.1.1/dns-query#代理选择"
+    - "https://8.8.8.8/dns-query#代理选择"
+
+# 配合爱快：只接管双栈 Fake-IP，OxiDNS 国内直连不受影响。
+tun:
+  enable: true
+  stack: mixed
+  auto-route: true
+  auto-detect-interface: true
+  dns-hijack: []
+  inet6-address: ["fdfe:dcba:9876::1/126"]
+  route-address: [198.18.0.0/16, "fdfe:dcba:9876::/64"]
+
+rules:
+  - MATCH,代理选择
