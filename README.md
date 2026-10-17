@@ -10,6 +10,8 @@ curl -fsSL https://raw.githubusercontent.com/Ladavian/mihomo-install/main/instal
 
 安装到 `/opt/mihomo`。重复运行升级官方稳定内核，校验 SHA256，并保留原配置。旧文件存入 `backups/`，升级失败不会自动恢复，可从备份恢复。
 
+若 `/usr/local/bin/mihomo` 不存在，安装器创建命令链接，方便 ConfigFlow Agent 通过 `mihomo` 调用内核。已有独立命令不覆盖；此时 Agent 的 `service_binary` 应指向你实际使用的内核。旧版脚本安装用户可检查命令是否存在，再补上链接；无需重装。
+
 ## 修改配置
 
 编辑 `/opt/mihomo/config.yaml`，在 `proxies` 添加自己的节点，或取消 `proxy-providers` 和代理组 `use` 的注释并填写订阅。未配节点时默认 REJECT，不会提供有效代理。配置注释已说明如何修改。
