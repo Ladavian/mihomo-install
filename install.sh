@@ -71,6 +71,10 @@ for f in /opt/mihomo/mihomo /opt/mihomo/config.yaml /etc/systemd/system/mihomo.s
 done
 install -m 755 "$tmp/mihomo" /opt/mihomo/mihomo.new
 mv -f /opt/mihomo/mihomo.new /opt/mihomo/mihomo
+# ConfigFlow Agent 默认通过 PATH 执行 mihomo；保留已有独立内核，不强行覆盖。
+if [[ ! -e /usr/local/bin/mihomo && ! -L /usr/local/bin/mihomo ]]; then
+  ln -s /opt/mihomo/mihomo /usr/local/bin/mihomo
+fi
 [[ -f /opt/mihomo/config.yaml ]] || install -m 600 "$tmp/config.yaml" /opt/mihomo/config.yaml
 install -m 644 "$tmp/sysctl.conf" /etc/sysctl.d/90-mihomo.conf
 cat > /etc/systemd/system/mihomo.service <<'EOF'
